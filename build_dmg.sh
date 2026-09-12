@@ -10,9 +10,13 @@ python3 -m PyInstaller \
   --noconfirm \
   --clean \
   --windowed \
+  --target-architecture universal2 \
   --name "$APP_NAME" \
   --osx-bundle-identifier org.fembabe.usb \
   fembabe_usb.py
+
+chmod 755 "$OUTPUT_DIR/$APP_NAME.app/Contents/MacOS/$APP_NAME"
+codesign --force --deep --sign - "$OUTPUT_DIR/$APP_NAME.app"
 
 rm -rf "$STAGING_DIR"
 mkdir -p "$STAGING_DIR"

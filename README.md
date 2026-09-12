@@ -1,6 +1,7 @@
 # FEMBABE USB for macOS
 
-Native macOS build of the FEMBABE USB Streaming Helper.
+Universal macOS build of the FEMBABE USB Streaming Helper for Intel and Apple
+Silicon Macs.
 
 The app opens a local RTMP endpoint for OBS and relays the stream to a
 connected iPhone through Apple's usbmuxd service.

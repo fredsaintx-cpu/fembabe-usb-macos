@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,9 +28,19 @@ jobs:
       - name: Inspect artifact
         run: |
           file "dist/FEMBABE USB.app/Contents/MacOS/FEMBABE USB"
+          lipo -archs "dist/FEMBABE USB.app/Contents/MacOS/FEMBABE USB"
           file dist/FEMBABE-USB-macOS.dmg
-          codesign -dv --verbose=4 "dist/FEMBABE USB.app" 2>&1 || true
+          codesign --verify --deep --strict --verbose=4 "dist/FEMBABE USB.app"
+          codesign -dv --verbose=4 "dist/FEMBABE USB.app" 2>&1
           hdiutil imageinfo dist/FEMBABE-USB-macOS.dmg
+
+      - name: Launch smoke test
+        run: |
+          FEMBABE_DEMO=1 "dist/FEMBABE USB.app/Contents/MacOS/FEMBABE USB" &
+          APP_PID=$!
+          sleep 5
+          kill -0 "$APP_PID"
+          kill "$APP_PID"
 
       - name: Upload DMG and app
         uses: actions/upload-artifact@v4
