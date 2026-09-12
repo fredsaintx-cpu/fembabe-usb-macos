@@ -6,7 +6,9 @@ VOLUME_NAME="FEMBABE USB"
 OUTPUT_DIR="dist"
 STAGING_DIR="build/dmg"
 
-python3 -m PyInstaller \
+PYTHON=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+
+"$PYTHON" -m PyInstaller \
   --noconfirm \
   --clean \
   --windowed \

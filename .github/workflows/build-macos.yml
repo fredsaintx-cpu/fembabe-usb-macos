@@ -7,18 +7,19 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install Universal 2 Python
+        run: |
+          curl -fL https://www.python.org/ftp/python/3.12.10/python-3.12.10-macos11.pkg -o /tmp/python.pkg
+          sudo installer -pkg /tmp/python.pkg -target /
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -c 'import platform, tkinter; print(platform.platform()); print(tkinter.TkVersion)'
 
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip install -r requirements.txt
 
       - name: Build app and DMG
         run: |
