@@ -1,0 +1,42 @@
+name: Build macOS DMG
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Build app and DMG
+        run: |
+          chmod +x build_dmg.sh
+          ./build_dmg.sh
+
+      - name: Inspect artifact
+        run: |
+          file "dist/FEMBABE USB.app/Contents/MacOS/FEMBABE USB"
+          file dist/FEMBABE-USB-macOS.dmg
+          codesign -dv --verbose=4 "dist/FEMBABE USB.app" 2>&1 || true
+          hdiutil imageinfo dist/FEMBABE-USB-macOS.dmg
+
+      - name: Upload DMG and app
+        uses: actions/upload-artifact@v4
+        with:
+          name: FEMBABE-USB-macOS
+          path: |
+            dist/FEMBABE-USB-macOS.dmg
+            dist/FEMBABE USB.app
+          if-no-files-found: error
